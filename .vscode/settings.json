@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 27015,
+            "driver": "PostgreSQL",
+            "database": "nest",
+            "username": "user",
+            "password": "cuba",
+            "name": "db"
+        }
+    ]
+}
