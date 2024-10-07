@@ -9,6 +9,9 @@ import { Columns } from './entity/column.entity';
 import { User } from './entity/user.entity';
 import { Comments } from './entity/comments.entity';
 import { UsersModule } from './users/users.module';
+import { RefreshToken } from './entity/rtoken.entity';
+import { CardsModule } from './cards/cards.module';
+import { ColumnsModule } from './columns/columns.module';
 config();
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -19,14 +22,16 @@ config();
     password: process.env.db_pass,
     database: process.env.db_name,
     synchronize: true,
-    entities: [Card, Columns, User, Comments]
+    entities: [Card, Columns, User, Comments, RefreshToken]
   }),
   JwtModule.register({
     global: true,
     secret: process.env.jwt_secret,
     signOptions: { expiresIn: '4d' },
   }),
-    UsersModule,],
+    UsersModule,
+    CardsModule,
+    ColumnsModule,],
   controllers: [AppController],
   providers: [AppService],
 })

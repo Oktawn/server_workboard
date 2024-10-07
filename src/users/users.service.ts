@@ -5,11 +5,14 @@ import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync, hashSync } from 'bcrypt';
+// import { RefreshToken } from 'src/entity/rtoken.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
+        // @InjectRepository(RefreshToken) private refreshTokenRepository: Repository<RefreshToken>,
         private jwtService: JwtService
     ) { }
     async signUp(user: UserDto) {
@@ -27,14 +30,20 @@ export class UsersService {
         if (!isUser || !compareSync(password, isUser.password))
             throw new UnauthorizedException('Invalid email or password');
         ;
+        const tokens = this.generateToken(isUser.id);
         return {
-            'access_token': this.generateToken(isUser.id),
-            'user_email': isUser.email
+            ...tokens
         }
     }
 
     generateToken(userId: number) {
-        return this.jwtService.sign(userId.toString());
+        const token = this.jwtService.sign({ userId });
+        const refreshToken = randomUUID();
+        // this.refreshTokenRepository.save({ token: refreshToken, user: { user_id: userId } });
+        return {
+            token,
+            refreshToken
+        };
     }
 
 }
